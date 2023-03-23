@@ -44,7 +44,7 @@ function cacheFunction(cb) {
   let cache = {};
 
   return function (arg) {
-    if (cache.hasOwnProperty(arg) === true) {
+    if (cache.hasOwnProperty(arg)) {
       return cache[arg];
     } else {
       cache[arg] = cb(arg);
