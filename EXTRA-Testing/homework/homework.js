@@ -32,16 +32,19 @@ const layout = [
 ];
 
 function checkSeatStatus(row, number) {
-  if (typeof row !== "string")
-    throw new TypeError("First parameter is not a string");
+  if (typeof row !== "string" && row.length !== 1)
+    throw new TypeError("First parameter is not a letter");
   if (typeof number !== "number")
     throw new TypeError("Second parameter is not a number");
+  if (number > 4) throw new TypeError("Second parameter is higher than 4");
 
   const seat = getSeat(row, number);
   return seat.booked;
 }
 
 function getRowNumber(letter) {
+  if (letter.charCodeAt(0) - 65 >= 5) throw new TypeError("Letter exceeds E");
+
   return letter.charCodeAt(0) - 65;
 }
 
@@ -60,9 +63,43 @@ function getSeat(letter, number) {
   return seat;
 }
 
+function seatSummary(layout) {
+  if (typeof layout !== "object")
+    throw new TypeError("First parameter is not an array");
+
+  let summary = {
+    totalSeats: 0,
+    seatsBooked: 0,
+    seatsFree: 0,
+    collection: 0,
+  };
+
+  for (let i = 0; i < layout.length; i++) {
+    for (let j = 0; j < layout[i].length; j++) {
+      const seat = layout[i][j];
+      summary.totalSeats++;
+      if (seat.booked) {
+        summary.seatsBooked++;
+        if (seat.type === "VIP") {
+          summary.collection += 600;
+        } else if (seat.type === "NORMAL") {
+          summary.collection += 450;
+        } else if (seat.type === "ECONOMIC") {
+          summary.collection += 300;
+        }
+      } else {
+        summary.seatsFree++;
+      }
+    }
+  }
+
+  return summary;
+}
+
 module.exports = {
   checkSeatStatus,
   getRowNumber,
   book,
   getSeat,
+  seatSummary,
 };
