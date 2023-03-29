@@ -1,9 +1,4 @@
-const {
-  checkSeatStatus,
-  getRowNumber,
-  book,
-  seatSummary,
-} = require("../homework");
+const { checkSeatStatus, getRowNumber, seatSummary } = require("../homework");
 
 describe("checkSeatStatus", () => {
   it("checkSeatStatus is a function", () => {

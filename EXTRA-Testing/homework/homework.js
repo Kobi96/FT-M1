@@ -48,14 +48,6 @@ function getRowNumber(letter) {
   return letter.charCodeAt(0) - 65;
 }
 
-function book(row, number) {
-  if (checkSeatStatus(row, number))
-    return `Seat in ${row}${number} is already booked`;
-  const seat = getSeat(row, number);
-  seat.booked = true;
-  return `Seat in ${row}${number} successfully booked`;
-}
-
 function getSeat(letter, number) {
   const numberRow = getRowNumber(letter);
   const layoutRows = layout[numberRow];
@@ -99,7 +91,6 @@ function seatSummary(layout) {
 module.exports = {
   checkSeatStatus,
   getRowNumber,
-  book,
   getSeat,
   seatSummary,
 };
