@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /* EJERCICIO 1
 Implementar la clase LinkedList, definiendo los siguientes métodos:
@@ -10,9 +10,82 @@ Implementar la clase LinkedList, definiendo los siguientes métodos:
   search(isEven), donde isEven es una función que retorna true cuando recibe por parámetro un número par, busca un nodo cuyo valor sea un número par.
   En caso de que la búsqueda no arroje resultados, search debe retornar null.
 */
-function LinkedList() {}
+function LinkedList() {
+  this.head = null;
 
-function Node(value) {}
+  //* Se deja establecida una cabecera que no tiene valor (la locomotora del tren)
+}
+
+function Node(value) {
+  this.value = value;
+  this.next = null;
+
+  //* Hay un nodo detrás de la cabecera que sí tiene un valor definido
+}
+
+// ? Cómo hago para agregar valores nuevos?
+
+LinkedList.prototype.add = function (value) {
+  let newNode = new Node(value);
+  let current = this.head; //* Parametro de referencia que ES el nodo al que apunta
+
+  if (!current) {
+    this.head = newNode; //* Se establece que los vagones se van moviendo hacia atrás mientras haya nodos con un valor adentro
+    return value;
+  }
+
+  while (current.next) {
+    current = current.next;
+  }
+  //* Mientras que en el siguiente vagón del tren haya valor, osea que no sea nulo, el nuevo nodo se ira moviendo hacia atrás
+
+  current.next = newNode; //* El nuevo valor queda atrás de todo
+
+  return value;
+};
+// TODO Hacen falta dos instancias y 3 métodos
+
+LinkedList.prototype.remove = function () {
+  let current = this.head;
+
+  if (!current) {
+    return null;
+  }
+
+  if (!current.next) {
+    let aux = current.value;
+    this.head = null; // Por qué no puede ser current?
+    return aux;
+  }
+
+  while (current.next.next) {
+    current = current.next;
+  }
+
+  let aux = current.next.value;
+  this.head.next = null; // Por qué acá sí puede ser Current?
+
+  return aux;
+};
+
+LinkedList.prototype.search = function (parametro) {
+  let current = this.head;
+  if (!current) return false;
+
+  if (typeof parametro === "function") {
+    while (current) {
+      if (parametro(current.value)) return current.value;
+      else current = current.next;
+    }
+    return null;
+  } else {
+    while (current) {
+      if (current.value === parametro) return current.value;
+      else current = current.next;
+    }
+    return null;
+  }
+};
 
 /* EJERCICIO 2
 Implementar la clase HashTable.
@@ -27,13 +100,47 @@ La clase debe tener los siguientes métodos:
 
 Ejemplo: supongamos que quiero guardar {instructora: 'Ani'} en la tabla. Primero puedo chequear, con hasKey, si ya hay algo en la tabla con el nombre 'instructora'; luego, invocando set('instructora', 'Ani'), se almacenará el par clave-valor en un bucket específico (determinado al hashear la clave)
 */
-function HashTable() {}
+function HashTable() {
+  (this.bucket = []), (this.numBuckets = 35);
+}
+
+HashTable.prototype.hash = function (key) {
+  let contador = 0;
+
+  for (let i = 0; i < key.length; i++) {
+    contador += key[i].charCodeAt();
+  }
+
+  return contador % this.numBuckets;
+};
+
+HashTable.prototype.set = function (key, value) {
+  if (typeof key !== "string") throw new TypeError("Keys must be strings");
+
+  let index = this.hash(key);
+
+  if (!this.bucket[index]) {
+    this.bucket[index] = { [key]: value };
+  } else {
+    this.bucket[index][key] = value;
+  }
+};
+
+HashTable.prototype.get = function (key) {
+  let index = this.hash(key);
+
+  return this.bucket[index][key];
+};
+
+HashTable.prototype.hasKey = function (key) {
+  return !!this.get(key);
+};
 
 // No modifiquen nada debajo de esta linea
 // --------------------------------
 
 module.exports = {
-   Node,
-   LinkedList,
-   HashTable,
+  Node,
+  LinkedList,
+  HashTable,
 };
